@@ -1,0 +1,113 @@
+\documentclass[a4paper]{article}
+
+% I made this doc by editing the template at https://www.overleaf.com/latex/templates/trinity-college-dublin-simple-slash-module-report-style/swvvktznrqbd
+
+% Use XeLaTex or LuaLaTex to compile
+
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[a4paper,top=2cm,bottom=2cm,left=2.5cm,right=2.5cm,marginparwidth=1.75cm]{geometry}
+
+\usepackage{fontspec}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{minted,breakable,xparse,skins}
+
+% \usepackage{epigraph}
+
+% font for line number
+\renewcommand{\theFancyVerbLine}{%
+  \textcolor{gray}{\scriptsize\arabic{FancyVerbLine}}%
+}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,allcolors=.,urlcolor=blue]{hyperref}
+
+\usepackage{indentfirst}
+\usepackage{microtype}
+
+\title{Final Report}
+\author{Jarn Yam Group}
+
+% \usepackage{fancyhdr}
+% \pagestyle{fancy}
+% \fancyhead[L]{\docTitle}
+% \fancyhead[R]{\authorName}
+
+\usepackage{svg}
+
+% ---------- START DOC CONFIG ----------
+\newcommand{\docTitle}{Final Report}
+\newcommand{\docSubtitle}{Weather Station}
+\newcommand{\authorName}{Weather Station}
+\date{}
+
+\usepackage{libertine}
+% \setmainfont{CHULALONGKORN}
+% \renewcommand{\familydefault}{\sfdefault}
+% \setmonofont{JetBrains Mono}[Contextuals=Alternate]
+% ----------  END DOC CONFIG  ----------
+
+\begin{document}
+
+\begin{titlepage}
+  \vspace*{20pt}
+
+  \centering\Large
+
+  \textbf{Final Report}
+
+  Weather Station
+
+  \vspace*{20pt}
+
+  Group \\ Jarn Yam
+
+  % \vspace*{40pt}
+  \vfill
+
+  Members
+
+  \vspace*{20pt}
+
+  \begin{tabular}{lll}
+    Sippakorn  & Thunyahan      & 6631355721 \\
+    Krissada   & Singhakachain  & 6632007521 \\
+    Thanakrit  & Bunrueng       & 6632092821 \\
+    Boonyakorn & Tanrattanakorn & 6632111021
+  \end{tabular}
+
+  \vfill
+
+  Presented to \\ \textbf{Asst. Prof. Dr. Pitchaya Sitthi-amorn}
+
+  \vfill
+
+  %   Dec 9\textsuperscript{th}, 2025
+  %   \vspace*{20pt}
+
+  2110366 Embedded System Lab I \\
+  Semester 1/2025 \\
+  Department of Computer Engineering, Faculty of Engineering, \\
+  Chulalongkorn University
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{Project Description}
+
+\section{Equipment}
+
+\section{System Architecture}
+
+\subsection{Source Code}
+\subsection{Diagram}
+
+\section{Role and Responsibility}
+
+\end{document}
