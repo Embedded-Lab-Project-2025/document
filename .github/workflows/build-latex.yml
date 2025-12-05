@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - '*.tex'
+      - 'assets/**'
 jobs:
   build_latex:
     runs-on: ubuntu-latest
