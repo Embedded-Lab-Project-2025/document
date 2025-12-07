@@ -103,8 +103,47 @@
 
 \section{Equipment}
 
-\section{System Architecture}
 
+\section{System Architecture}
+\subsection{Weather Station Subsystem}
+  The Weather Station Subsytem is responsible for collecting weather data from the environment, namely temperature, 
+  humidity, light intensity, and liquid precipitation. 
+
+  The subsystem utilizes STM32 nucleo f411 board as the primary microcontroller unit (MCU) to interface with the sensors.
+  The STM32 then processes the raw data from the sensors and transmits the processed data to ESP32S3 via UART communication protocol.
+  Finally, the ESP32S3 sends the data to the cloud server through MQTT to be displayed on the web application.
+  \subsubsection{Sensors}
+  \begin{enumerate}
+    \item DHT22: Temperature and Humidity Sensor
+      \begin{itemize}
+        \item Interface: One-wire digital communication
+        \item Data: Temperature (°C), Humidity (\%)
+      \end{itemize}
+    \item Light Dependent Resistor (LDR)
+      \begin{itemize}
+        \item Interface: Analog voltage reading
+        \item Data: LightIntensity (\%)
+      \end{itemize}
+    \item Water Level Sensor: Liquid Precipitation Sensor
+      \begin{itemize}
+        \item Interface: Analog voltage reading
+        \item Data: WaterLevel (mm)
+      \end{itemize}
+  \end{enumerate}
+\subsubsection{STM32 to ESP32S3 Communication}
+  The STM32 microcontroller communicates with the ESP32S3 using UART protocol.
+  The ESP32S3 then sends a char 'R' to request data from the STM32.
+  Upon receiving the request, the STM32 respond with the latest data packet.
+  The data packet is sent as a raw byte stream with the following structure:
+  \begin{itemize}
+    \item Start Byte: 0xAA uint8\_t
+    \item Temperature: uint8\_t
+    \item Humidity: uint8\_t
+    \item Light Intensity: float
+    \item Water Level: float
+    \item Checksum: uint8\_t 
+  \end{itemize}
+  
 \subsection{Source Code}
 \subsection{Diagram}
 % TODO: change to a more professional diagram
@@ -115,5 +154,6 @@
 \end{figure}
 
 \section{Role and Responsibility}
+
 
 \end{document}
