@@ -14,7 +14,44 @@
 \usepackage{tcolorbox}
 \tcbuselibrary{minted,breakable,xparse,skins}
 
-% \usepackage{epigraph}
+% Snippet from https://tex.stackexchange.com/questions/475826/how-to-present-a-python-code-snippet-efficiently-in-latex
+\definecolor{bg}{gray}{0.95}
+\DeclareTCBListing{mintedbox}{O{}m!O{}}{%
+  breakable=true,
+  listing engine=minted,
+  listing only,
+  minted language=#2,
+  minted style=default,
+  minted options={%
+    linenos,
+    gobble=0,
+    breaklines=true,
+    breakafter=,,
+    fontsize=\small,
+    numbersep=8pt,
+  #1},
+  boxsep=0pt,
+  left skip=0pt,
+  right skip=0pt,
+  left=25pt,
+  right=0pt,
+  top=3pt,
+  bottom=3pt,
+  before skip=12pt,
+  after skip=12pt,
+  % arc=5pt,
+  leftrule=0pt,
+  rightrule=0pt,
+  bottomrule=0pt,
+  toprule=0pt,
+  % colback=bg,
+  % colframe=orange!70,
+  enhanced,
+  overlay={%
+    \begin{tcbclipinterior}
+      \fill[gray!20!white] (frame.south west) rectangle ([xshift=20pt]frame.north west);
+  \end{tcbclipinterior}},
+#3}
 
 % font for line number
 \renewcommand{\theFancyVerbLine}{%
@@ -106,6 +143,14 @@
 \section{System Architecture}
 
 \subsection{Source Code}
+
+\begin{mintedbox}{python}
+language = 'Python'
+print(f'This is {language}')
+s = f'This is how to add code snippet.'
+print(s)
+\end{mintedbox}
+
 \subsection{Diagram}
 % TODO: change to a more professional diagram
 \begin{figure}[H]
