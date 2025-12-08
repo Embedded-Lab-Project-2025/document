@@ -3,7 +3,6 @@
 % I made this doc by editing the template at https://www.overleaf.com/latex/templates/trinity-college-dublin-simple-slash-module-report-style/swvvktznrqbd
 
 % Use XeLaTex or LuaLaTex to compile
-
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -18,7 +17,7 @@
 \definecolor{bg}{gray}{0.95}
 \DeclareTCBListing{mintedbox}{O{}m!O{}}{%
   breakable=true,
-  listing engine=minted,
+  listing engine=minted,  
   listing only,
   minted language=#2,
   minted style=default,
@@ -141,45 +140,134 @@
 \section{Equipment}
 
 
+\newpage
+\section{Hardware Configuration}
+
+\begin{table}[H]
+\centering
+\caption{STM32 Nucleo F411 Pin Mapping and Configuration}
+\label{tab:pin_connections}
+\resizebox{\columnwidth}{!}{\begin{tabular}{|c|c|c|c|c|}
+\hline
+\textbf{MCU Pin} & \textbf{Board Pin} & \textbf{Pin Purpose} & \textbf{Configuration} & \textbf{Connected To} \\
+\hline
+\textbf{PA0} & \textbf{A0} & Water Level Sensor ADC Input & Analog Input & HW-038 Water Level Sensor \\
+\hline
+\textbf{PA1} & \textbf{A1} & LDR Light Sensor ADC Input & Analog Input & Light Dependent Resistor (LDR) \\
+\hline
+\textbf{PA5} & \textbf{D13} & Status LED & Digital Output (Push-Pull) & On-board LED indicator \\
+\hline
+\textbf{PA9} & \textbf{D8} & USART1 TX (ESP32 Communication) & Alternate Function & ESP32 UART RX \\
+\hline
+\textbf{PA10} & \textbf{D2} & USART1 RX (ESP32 Communication) & Alternate Function & ESP32 UART TX \\
+\hline
+\textbf{PB0} & \textbf{D3} & DHT11 Temperature/Humidity Sensor & Digital I/O & DHT11 data pin \\
+\hline
+\textbf{PC13} & \textbf{B1} & User Button & Digital Input (Interrupt) & On-board user button \\
+\hline
+\end{tabular}}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{ESP32-S3 Pin Mapping and Configuration}
+\label{tab:esp32_pin_connections}
+\resizebox{\columnwidth}{!}{\begin{tabular}{|c|c|c|c|} 
+\hline
+\textbf{GPIO Pin} & \textbf{Pin Purpose} & \textbf{Configuration} & \textbf{Connected To} \\
+\hline
+\textbf{GPIO 16} & UART2 RX (STM32 Communication) & Serial Input & STM32 UART TX (PA9) \\
+\hline
+\textbf{GPIO 17} & UART2 TX (STM32 Communication) & Serial Output & STM32 UART RX (PA10) \\
+\hline
+\textbf{GPIO 14} & Servo Motor Control & PWM Output & Rain Gauge Servo Motor \\
+\hline
+\textbf{GPIO 48} & RGB Status LED & NeoPixel Data & WS2812B RGB LED \\
+\hline
+\end{tabular}}
+\end{table}
+
+\subsection{Additional Configuration Details}
+
+\subsubsection{ADC Configuration}
+\begin{itemize}
+    \item \textbf{ADC1} is used for both analog sensors (LDR and Water Level)
+    \item Resolution: 12-bit (0-4095 range)
+    \item Channels dynamically configured in software
+    \item LDR uses ADC Channel 1, Water sensor uses ADC Channel 0
+\end{itemize}
+
+\subsubsection{UART Configuration}
+\begin{itemize}
+    \item \textbf{USART1}: 115200 baud, 8N1, TX/RX mode - Primary communication with ESP32
+    \item \textbf{USART2}: 115200 baud, 8N1, TX/RX mode - Debug output via ST-Link VCP
+\end{itemize}
+
+\subsubsection{Timer Configuration}
+\begin{itemize}
+    \item \textbf{TIM1} is configured for microsecond timing delays required by DHT11 sensor protocol
+\end{itemize}
+
+\subsubsection{Power Management}
+\begin{itemize}
+    \item Most unused pins are configured as analog inputs (high impedance) to minimize power consumption
+    \item ADC peripherals are started/stopped dynamically to conserve power during sensor readings
+\end{itemize}
+
+\newpage
 \section{System Architecture}
 \subsection{Weather Station Subsystem}
   The Weather Station Subsytem is responsible for collecting weather data from the environment, namely temperature, 
   humidity, light intensity, and liquid precipitation. 
 
-  The subsystem utilizes STM32 nucleo f411 board as the primary microcontroller unit (MCU) to interface with the sensors.
+  The subsystem utilizes STM32 nucleo F411 board as the primary microcontroller unit (MCU) to interface with the sensors.
   The STM32 then processes the raw data from the sensors and transmits the processed data to ESP32S3 via UART communication protocol.
   Finally, the ESP32S3 sends the data to the cloud server through MQTT to be displayed on the web application.
+
   \subsubsection{Sensors}
-  \begin{enumerate}
-    \item DHT22: Temperature and Humidity Sensor
-      \begin{itemize}
-        \item Interface: One-wire digital communication
-        \item Data: Temperature (°C), Humidity (\%)
-      \end{itemize}
-    \item Light Dependent Resistor (LDR)
-      \begin{itemize}
-        \item Interface: Analog voltage reading
-        \item Data: LightIntensity (\%)
-      \end{itemize}
-    \item Water Level Sensor: Liquid Precipitation Sensor
-      \begin{itemize}
-        \item Interface: Analog voltage reading
-        \item Data: WaterLevel (mm)
-      \end{itemize}
-  \end{enumerate}
+    \begin{table}[H]
+    \centering
+    \caption{Weather Station Sensors}
+    \label{tab:sensor_summary}
+    \resizebox{\columnwidth}{!}{\begin{tabular}{|c|c|c|c|}
+      \hline
+      	\textbf{Sensor} & \textbf{Type} & \textbf{Interface} & \textbf{Measured Data} \\
+      \hline
+      DHT22 & Temperature/Humidity & One-wire digital & Temperature (\textdegree C), Humidity (\%) \\
+      \hline
+      LDR & Light Intensity & Analog voltage & Light Intensity (\%) \\
+      \hline
+      Water Level Sensor & Liquid Precipitation & Analog voltage & Water Level (mm) \\
+      \hline
+    \end{tabular}}
+    \end{table}
 \subsubsection{STM32 to ESP32S3 Communication}
   The STM32 microcontroller communicates with the ESP32S3 using UART protocol.
   The ESP32S3 then sends a char 'R' to request data from the STM32.
   Upon receiving the request, the STM32 respond with the latest data packet.
   The data packet is sent as a raw byte stream with the following structure:
-  \begin{itemize}
-    \item Start Byte: 0xAA uint8\_t
-    \item Temperature: uint8\_t
-    \item Humidity: uint8\_t
-    \item Light Intensity: float
-    \item Water Level: float
-    \item Checksum: uint8\_t 
-  \end{itemize}
+  \begin{table}[H]
+    \centering
+    \caption{UART Data Packet Structure}
+    \label{tab:uart_packet_structure}
+    \begin{tabular}{|c|c|c|}
+      \hline
+      	\textbf{Field} & \textbf{Type} & \textbf{Size (bytes)} \\
+      \hline
+      Start Byte & uint8\_t & 1 \\
+      \hline
+      Temperature & uint8\_t & 1 \\
+      \hline
+      Humidity & uint8\_t & 1 \\
+      \hline
+      Light Intensity & float & 4 \\
+      \hline
+      Water Level & float & 4 \\
+      \hline
+      Checksum & uint8\_t & 1 \\
+      \hline
+    \end{tabular}
+  \end{table}
   
 \subsection{Source Code}
 
