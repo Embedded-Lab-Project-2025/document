@@ -164,13 +164,17 @@ The objective of this project is to design and implement a weather station syste
 \subsection{Setup Picture}
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\textwidth]{assets/hardware_setup.jpg}
-  \caption{Hardware Setup}
-\end{figure}
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{assets/rain_gauge.jpg}
-  \caption{Servo Actuated Rain Gauge}
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{assets/hardware_setup.jpg}
+    \caption{Hardware Setup}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{assets/rain_gauge.jpg}
+    \caption{Servo Actuated Rain Gauge}
+  \end{minipage}
 \end{figure}
 
 \newpage
@@ -311,8 +315,8 @@ The data packet is sent as a raw byte stream with the following structure:
 \end{table}
 \subsubsection{MQTT Communication}
 The ESP32S3 connects to a Wi-Fi network and establishes a connection to the MQTT broker.
-It will periodically publish the weather data received from the STM32 to the "sensor/data" topic in CSV format.
-The ESP32S3 also subscribes to the "sensor/action" topic and which will allows for the reset of the rain gauge when "resetRainGauge" command is received.
+It will periodically publish the weather data received from the STM32 to the ``sensor/data'' topic in CSV format.
+The ESP32S3 also subscribes to the ``sensor/action'' topic and which will allows for the reset of the rain gauge when ``resetRainGauge'' command is received.
 \subsubsection{Additional Feature}
 In addition to MQTT communication, the ESP32S3 also controls a servo motor with PWM signal to reset the rain gauge and an RGB LED to indicate system status.
 \begin{table}[H]
