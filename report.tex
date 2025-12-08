@@ -186,6 +186,12 @@ The objective of this project is to design and implement a weather station syste
 \section{Hardware Configuration}
 
 \subsection{Pin Connections}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{assets/stm32_ioc.png}
+  \caption{STM32 Nucleo F411 Pin Configuration in STM32CubeMX}
+\end{figure}
+
 \begin{table}[H]
   \centering
   \caption{STM32 Nucleo F411 Pin Mapping and Configuration}
@@ -312,7 +318,6 @@ The data packet is sent as a raw byte stream with the following structure:
     \hline
   \end{tabular}
 \end{table}
-\subsection{ESP32S3}
 \subsubsection{MQTT Communication}
 The ESP32S3 connects to a Wi-Fi network and establishes a connection to the MQTT broker.
 It will periodically publishes the weather data received from the STM32 to the "sensor/data" topic in CSV format.
