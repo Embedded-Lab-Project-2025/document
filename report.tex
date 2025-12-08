@@ -174,15 +174,6 @@ The objective of this project is to design and implement a weather station syste
 \end{figure}
 
 \newpage
-\subsection{Diagram}
-% TODO: change to a more professional diagram
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{assets/system_overview_diagram.png}
-  \caption{System overview diagram}
-\end{figure}
-
-\newpage
 \section{Hardware Configuration}
 
 \subsection{Pin Connections}
@@ -315,45 +306,223 @@ The data packet is sent as a raw byte stream with the following structure:
 \subsection{ESP32S3}
 \subsubsection{MQTT Communication}
 The ESP32S3 connects to a Wi-Fi network and establishes a connection to the MQTT broker.
-It will periodically publishes the weather data received from the STM32 to the "sensor/data" topic in CSV format.
+It will periodically publish the weather data received from the STM32 to the "sensor/data" topic in CSV format.
 The ESP32S3 also subscribes to the "sensor/action" topic and which will allows for the reset of the rain gauge when "resetRainGauge" command is received.
 \subsubsection{Additional Feature}
 In addition to MQTT communication, the ESP32S3 also controls a servo motor with PWM signal to reset the rain gauge and an RGB LED to indicate system status.
 \begin{table}[H]
-\centering
-\caption{ESP32S3 Status LED Color Mapping}
-\label{tab:status_color}
-\begin{tabular}{|c|c|c|c|}
-\hline
-\textbf{Status} & \textbf{Color} & \textbf{RGB Value} & \textbf{Meaning} \\
-\hline
-Normal Operation & Green & (0, 255, 0) & All systems OK \\
-\hline
-WiFi Not Connected & Red & (255, 0, 0) & WiFi connection lost or unavailable \\
-\hline
-MQTT Not Connected & Blue & (0, 0, 255) & MQTT broker not connected \\
-\hline
-Sensor Error & Yellow & (255, 255, 0) & Sensor communication or data error \\
-\hline
-\end{tabular}
+  \centering
+  \caption{ESP32S3 Status LED Color Mapping}
+  \label{tab:status_color}
+  \begin{tabular}{|c|c|c|c|}
+    \hline
+    \textbf{Status} & \textbf{Color} & \textbf{RGB Value} & \textbf{Meaning} \\
+    \hline
+    Normal Operation & Green & (0, 255, 0) & All systems OK \\
+    \hline
+    WiFi Not Connected & Red & (255, 0, 0) & WiFi connection lost or unavailable \\
+    \hline
+    MQTT Not Connected & Blue & (0, 0, 255) & MQTT broker not connected \\
+    \hline
+    Sensor Error & Yellow & (255, 255, 0) & Sensor communication or data error \\
+    \hline
+  \end{tabular}
 \end{table}
 
-\newpage
-\section{Source Code}
+\subsection{Data Collection Subsystem}
+\label{sub:data_collection_sub}
+The Data Collection Subsystem serves as the central hub for receiving, processing, storing, and distributing weather data from the ESP32S3 device to the web application. This subsystem consists of an MQTT broker, a backend server, and a database system.
 
-\begin{codebox}{Python}
-  language = 'Python'
-  print(f'This is {language}')
-  s = f'This is how to add code snippet.'
-  print(s)
+\subsubsection{Data Flow Diagram}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{assets/data_flow_diagram.pdf}
+  \caption{Diagram depicting flow of data between each major components}
+\end{figure}
+
+\subsubsection{MQTT Broker}
+The system utilizes an MQTT broker as the primary communication protocol between the ESP32S3 and the website. MQTT was selected for its lightweight nature, low bandwidth requirements, and publish-subscribe messaging pattern, which is ideal for IoT applications.
+
+Due to limitation on the browser's ability to directly connect via MQTT protocol, Eclipse Mosquitto was chosen for its ability to open a WebSocket interface, allowing the web application to communicate with the broker directly.
+
+\begin{itemize}
+  \item \textbf{Broker}: Eclipse Mosquitto
+  \item \textbf{Protocol}: MQTT and WebSocket
+  \item \textbf{Topics}:
+    \begin{itemize}
+      \item \texttt{sensor/data}: Published by ESP32S3 containing weather readings in CSV format
+      \item \texttt{sensor/action}: Subscribed by ESP32S3 to receive commands (e.g., resetRainGauge)
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Backend Server}
+The backend server subscribes to the MQTT broker to receive sensor data, stores it in the database, and provides historical data for the web application.
+It has a single API endpoint which is \texttt{/api/history}.
+
+\begin{itemize}
+  \item \textbf{Technology Stack}: Go with Fiber framework
+  \item \textbf{MQTT Client Library}: Eclipse Paho
+    % \item \textbf{Key Functions}:
+    %   \begin{itemize}
+    %     \item Subscribe to \texttt{sensor/data} topic and parse incoming CSV data
+    %     \item Validate and sanitize sensor readings
+    %     \item Store data with timestamps in the database
+    %     \item Publish commands to \texttt{sensor/action} topic based on web requests
+    %     \item Expose RESTful API endpoints for data retrieval and device control
+    %   \end{itemize}
+\end{itemize}
+
+\subsubsection{API Response Format}
+
+The \texttt{/api/history} endpoint returns a JSON object containing an array of historical sensor readings:
+
+\begin{codebox}{python}
+  {
+    "data": [
+      {
+        "id": 123,
+        "timestamp": "2025-12-09T10:30:00Z",
+        "temperature": 25.5,
+        "humidity": 60.2,
+        "light": 75.8,
+        "rain": 12.3
+      },
+      ...
+    ],
+    "count": 100
+  }
 \end{codebox}
+
+\begin{table}[H]
+  \centering
+  \caption{API Response Fields}
+  \label{tab:api_response_fields}
+  \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{Field} & \textbf{Type} & \textbf{Description} \\
+    \hline
+    data & Array & Array of historical data points \\
+    \hline
+    count & Integer & Total number of records returned \\
+    \hline
+    id & Integer & Unique identifier for each reading \\
+    \hline
+    timestamp & String (ISO 8601) & Time when data was recorded \\
+    \hline
+    temperature & Float & Temperature in Celsius degrees \\
+    \hline
+    humidity & Float & Relative humidity in percentage \\
+    \hline
+    light & Float & Light intensity in percentage \\
+    \hline
+    rain & Float & Precipitation level in millimeters \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\subsubsection{Database}
+The database stores historical weather data for visualization and analysis.
+
+\begin{itemize}
+  \item \textbf{Database System}: PostgreSQL 17
+  \item \textbf{Data Schema}:
+    \begin{table}[H]
+      \centering
+      \caption{Database Schema for Weather Data}
+      \label{tab:database_schema}
+      \begin{tabular}{|l|l|}
+        \hline
+        \textbf{Field} & \textbf{Data Type} \\
+        \hline
+        id & SERIAL PRIMARY KEY \\
+        \hline
+        timestamp & TIMESTAMP \\
+        \hline
+        temperature & DOUBLE PRECISION \\
+        \hline
+        humidity & DOUBLE PRECISION \\
+        \hline
+        light & DOUBLE PRECISION \\
+        \hline
+        rain & DOUBLE PRECISION \\
+        \hline
+      \end{tabular}
+    \end{table}
+\end{itemize}
+
+% \subsubsection{Data Flow}
+% \begin{enumerate}
+%   \item ESP32S3 publishes sensor data to \texttt{sensor/data} topic in CSV format
+%   \item Backend server receives the message via MQTT subscription
+%   \item Server parses and validates the data
+%   \item Validated data is stored in the database with a timestamp
+%   \item Web application requests data via RESTful API
+%   \item Server queries database and returns JSON response
+%   \item User actions from web application are published to \texttt{sensor/action} topic
+%   \item ESP32S3 receives commands and executes corresponding actions
+% \end{enumerate}
+
+\subsection{Website Subsystem}
+\label{sub:website_sub}
+The Website Subsystem provides a user-friendly interface for monitoring real-time weather data, viewing historical trends, and controlling device functions.
+% The web application is designed to be responsive and accessible from various devices including desktops, tablets, and smartphones.
+SvelteKit is selected for its lightweight nature and ease of use.
+
+\subsubsection{Frontend Architecture}
+\begin{itemize}
+  \item \textbf{Framework}: SvelteKit and Tailwind CSS
+  \item \textbf{State Management}: Svelte Store for application state
+  \item \textbf{Data Visualization}: D3.js for graphs and Three.js for 3D elements
+\end{itemize}
+
+\subsubsection{Pages and Features}
+\begin{enumerate}
+  \item \textbf{Real-time Dashboard}
+    \begin{itemize}
+      \item Stunning 3D house scene with dynamic lighting and rain animation
+      \item Display current temperature, humidity, light intensity, and precipitation levels
+      \item ``DRAIN'' button for manually issuing the board to drain the rain gauge
+      \item Updates in real-time as new data arrives
+    \end{itemize}
+
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=\textwidth]{assets/home_rain.png}
+      \caption{Screenshot of Real-time Dashboard Page}
+    \end{figure}
+
+  \item \textbf{Historical Data Visualization}
+    \begin{itemize}
+      \item Line charts showing collected sensor data over time
+      \item Date range selector for custom time periods
+      \item Fetches historical data from backend API
+      \item Updates in real-time as new data arrives
+    \end{itemize}
+
+    \begin{figure}[H]
+      \centering
+      \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{assets/charts_1.png}
+      \end{minipage}
+      \hfill
+      \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{assets/charts_2.png}
+      \end{minipage}
+      \caption{Screenshot of Historical Data Visualization Page}
+    \end{figure}
+\end{enumerate}
+
+\subsubsection{Deployment}
+Both \nameref{sub:website_sub} and \nameref{sub:data_collection_sub} subsystems are deployed on a home server using Docker containers for portability.
 
 \section{Role and Responsibility}
 \begin{enumerate}
   \item Sippakorn Thunyahan (Project Manager):
     Overall project coordination, document review, project setup
   \item Krissada Singhakachain (Backend Engineer): Cloud server setup, Web application development
-  \item Thanakrit Bunrueng (System Architet): Design system architecture, Design communication interface
+  \item Thanakrit Bunrueng (System Architect): Design system architecture, design communication interface
   \item Boonyakorn Tanrattanakorn (Embedded System Programmer): Implement sensor integration, embedded firmware development
 \end{enumerate}
 
