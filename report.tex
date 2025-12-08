@@ -135,9 +135,21 @@
 \tableofcontents
 \newpage
 
-\section{Project Description}
+\section{Objective}
+The objective of this project is to design and implement a weather station system capable of monitoring and reporting various environmental parameters, including temperature, humidity, light intensity, and liquid precipitation. The system will utilize microcontroller units (MCUs) to interface with sensors, process the collected data, and transmit it to a cloud server for remote access and visualization through a web application.
 
-\section{Equipment}
+\section{Equipment List}
+\begin{enumerate}
+  \item STM32 Nucleo F411RE Board
+  \item ESP32-S3 Development Board
+  \item DHT11 Temperature and Humidity Sensor
+  \item Light Dependent Resistor (LDR)
+  \item HW-038 Water Level Sensor
+  \item SG90 Servo Motor
+  \item Jumper
+  \item Breadboard
+  \item USB Cables
+\end{enumerate}
 
 
 \newpage
@@ -268,8 +280,13 @@
       \hline
     \end{tabular}
   \end{table}
-  
-\subsection{Source Code}
+\subsection{ESP32S3 to MQTT Backend Communication}
+The ESP32S3 connects to a Wi-Fi network and establishes a connection to the MQTT broker.
+It will periodically publishes the weather data received from the STM32 to the "sensor/data" topic in CSV format.
+The ESP32S3 also subscribes to the "sensor/action" topic and which will allows for the reset of the rain gauge when "resetRainGauge" command is received.
+
+\newpage
+\section{Source Code}
 
 \begin{mintedbox}{python}
 language = 'Python'
@@ -287,6 +304,17 @@ print(s)
 \end{figure}
 
 \section{Role and Responsibility}
+\begin{enumerate}
+  \item Sippakorn Thunyahan (Project Manager): 
+  Overall project coordination, document review, project setup
+  \item Krissada Singhakachain (Backend Engineer): Cloud server setup, Web application development
+  \item Thanakrit Bunrueng (System Architet): Design system architecture, Design communication interface
+  \item Boonyakorn Tanrattanakorn (Embedded System Programmer): Implement sensor integration, embedded firmware development
 
+\section{Appendix}
+\begin{itemize}
+  \item  Source code repository: \url{https://github.com/Embedded-Lab-Project-2025}
+\end{itemize}
+\end{enumerate}
 
 \end{document}
