@@ -161,10 +161,31 @@ The objective of this project is to design and implement a weather station syste
   \item Breadboard
   \item USB Cables
 \end{enumerate}
+\subsection{Setup Picture}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{assets/hardware_setup.jpg}
+  \caption{Hardware Setup}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{assets/rain_gauge.jpg}
+  \caption{Servo Actuated Rain Gauge}
+\end{figure}
+
+\newpage
+\subsection{Diagram}
+% TODO: change to a more professional diagram
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{assets/system_overview_diagram.png}
+  \caption{System overview diagram}
+\end{figure}
 
 \newpage
 \section{Hardware Configuration}
 
+\subsection{Pin Connections}
 \begin{table}[H]
   \centering
   \caption{STM32 Nucleo F411 Pin Mapping and Configuration}
@@ -178,15 +199,13 @@ The objective of this project is to design and implement a weather station syste
       \hline
       \textbf{PA1} & \textbf{A1} & LDR Light Sensor ADC Input & Analog Input & Light Dependent Resistor (LDR) \\
       \hline
-      \textbf{PA5} & \textbf{D13} & Status LED & Digital Output (Push-Pull) & On-board LED indicator \\
+      \textbf{PA5} & \textbf{-} & Status LED & Digital Output (Push-Pull) & On-board LED indicator \\
       \hline
-      \textbf{PA9} & \textbf{D8} & USART1 TX (ESP32 Communication) & Alternate Function & ESP32 UART RX \\
+      \textbf{PB0} & \textbf{A3} & DHT11 Temperature/Humidity Sensor & Digital I/O & DHT11 data pin \\
       \hline
-      \textbf{PA10} & \textbf{D2} & USART1 RX (ESP32 Communication) & Alternate Function & ESP32 UART TX \\
+      \textbf{PB3} & \textbf{D3} & USART1 RX (ESP32 Communication) & Alternate Function & ESP32 UART TX \\
       \hline
-      \textbf{PB0} & \textbf{D3} & DHT11 Temperature/Humidity Sensor & Digital I/O & DHT11 data pin \\
-      \hline
-      \textbf{PC13} & \textbf{B1} & User Button & Digital Input (Interrupt) & On-board user button \\
+      \textbf{PB6} & \textbf{D10} & USART1 TX (ESP32 Communication) & Alternate Function & ESP32 UART RX \\
       \hline
   \end{tabular}}
 \end{table}
@@ -200,9 +219,9 @@ The objective of this project is to design and implement a weather station syste
       \hline
       \textbf{GPIO Pin} & \textbf{Pin Purpose} & \textbf{Configuration} & \textbf{Connected To} \\
       \hline
-      \textbf{GPIO 16} & UART2 RX (STM32 Communication) & Serial Input & STM32 UART TX (PA9) \\
+      \textbf{GPIO 16} & UART RX (STM32 Communication) & Serial Input & STM32 UART TX \\
       \hline
-      \textbf{GPIO 17} & UART2 TX (STM32 Communication) & Serial Output & STM32 UART RX (PA10) \\
+      \textbf{GPIO 17} & UART TX (STM32 Communication) & Serial Output & STM32 UART RX\\
       \hline
       \textbf{GPIO 14} & Servo Motor Control & PWM Output & Rain Gauge Servo Motor \\
       \hline
@@ -293,10 +312,31 @@ The data packet is sent as a raw byte stream with the following structure:
     \hline
   \end{tabular}
 \end{table}
-\subsection{ESP32S3 to MQTT Backend Communication}
+\subsection{ESP32S3}
+\subsubsection{MQTT Communication}
 The ESP32S3 connects to a Wi-Fi network and establishes a connection to the MQTT broker.
 It will periodically publishes the weather data received from the STM32 to the "sensor/data" topic in CSV format.
 The ESP32S3 also subscribes to the "sensor/action" topic and which will allows for the reset of the rain gauge when "resetRainGauge" command is received.
+\subsubsection{Additional Feature}
+In addition to MQTT communication, the ESP32S3 also controls a servo motor with PWM signal to reset the rain gauge and an RGB LED to indicate system status.
+\begin{table}[H]
+\centering
+\caption{ESP32S3 Status LED Color Mapping}
+\label{tab:status_color}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Status} & \textbf{Color} & \textbf{RGB Value} & \textbf{Meaning} \\
+\hline
+Normal Operation & Green & (0, 255, 0) & All systems OK \\
+\hline
+WiFi Not Connected & Red & (255, 0, 0) & WiFi connection lost or unavailable \\
+\hline
+MQTT Not Connected & Blue & (0, 0, 255) & MQTT broker not connected \\
+\hline
+Sensor Error & Yellow & (255, 255, 0) & Sensor communication or data error \\
+\hline
+\end{tabular}
+\end{table}
 
 \newpage
 \section{Source Code}
@@ -308,14 +348,6 @@ The ESP32S3 also subscribes to the "sensor/action" topic and which will allows f
   print(s)
 \end{codebox}
 
-\subsection{Diagram}
-% TODO: change to a more professional diagram
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{assets/system_overview_diagram.png}
-  \caption{System overview diagram}
-\end{figure}
-
 \section{Role and Responsibility}
 \begin{enumerate}
   \item Sippakorn Thunyahan (Project Manager):
@@ -323,11 +355,11 @@ The ESP32S3 also subscribes to the "sensor/action" topic and which will allows f
   \item Krissada Singhakachain (Backend Engineer): Cloud server setup, Web application development
   \item Thanakrit Bunrueng (System Architet): Design system architecture, Design communication interface
   \item Boonyakorn Tanrattanakorn (Embedded System Programmer): Implement sensor integration, embedded firmware development
-
-    \section{Appendix}
-    \begin{itemize}
-      \item  Source code repository: \url{https://github.com/Embedded-Lab-Project-2025}
-    \end{itemize}
 \end{enumerate}
+
+\section{Appendix}
+\begin{itemize}
+  \item  Source code repository: \url{https://github.com/Embedded-Lab-Project-2025}
+\end{itemize}
 
 \end{document}
