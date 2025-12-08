@@ -260,7 +260,7 @@ The objective of this project is to design and implement a weather station syste
 The Weather Station Subsytem is responsible for collecting weather data from the environment, namely temperature,
 humidity, light intensity, and liquid precipitation.
 
-The subsystem utilizes STM32 nucleo F411 board as the primary microcontroller unit (MCU) to interface with the sensors.
+The subsystem utilizes STM32 Nucleo F411 board as the primary microcontroller unit (MCU) to interface with the sensors.
 The STM32 then processes the raw data from the sensors and transmits the processed data to ESP32S3 via UART communication protocol.
 Finally, the ESP32S3 sends the data to the cloud server through MQTT to be displayed on the web application.
 
@@ -284,7 +284,7 @@ Finally, the ESP32S3 sends the data to the cloud server through MQTT to be displ
 \end{table}
 \subsubsection{STM32 to ESP32S3 Communication}
 The STM32 microcontroller communicates with the ESP32S3 using UART protocol.
-The ESP32S3 then sends a char 'R' to request data from the STM32.
+The ESP32S3 then sends a char `R' to request data from the STM32.
 Upon receiving the request, the STM32 respond with the latest data packet.
 The data packet is sent as a raw byte stream with the following structure:
 \begin{table}[H]
@@ -325,7 +325,7 @@ In addition to MQTT communication, the ESP32S3 also controls a servo motor with 
     \hline
     Normal Operation & Green & (0, 255, 0) & All systems OK \\
     \hline
-    WiFi Not Connected & Red & (255, 0, 0) & WiFi connection lost or unavailable \\
+    Wi-Fi Not Connected & Red & (255, 0, 0) & Wi-Fi connection lost or unavailable \\
     \hline
     MQTT Not Connected & Blue & (0, 0, 255) & MQTT broker not connected \\
     \hline
@@ -356,7 +356,7 @@ Due to limitation on the browser's ability to directly connect via MQTT protocol
   \item \textbf{Topics}:
     \begin{itemize}
       \item \texttt{sensor/data}: Published by ESP32S3 containing weather readings in CSV format
-      \item \texttt{sensor/action}: Subscribed by ESP32S3 to receive commands (e.g., resetRainGauge)
+      \item \texttt{sensor/action}: Subscribed by ESP32S3 to receive \texttt{resetRainGauge} command
     \end{itemize}
 \end{itemize}
 
@@ -528,7 +528,7 @@ Both \nameref{sub:website_sub} and \nameref{sub:data_collection_sub} subsystems 
 \begin{enumerate}
   \item Sippakorn Thunyahan (Project Manager):
     Overall project coordination, document review, project setup
-  \item Krissada Singhakachain (Backend Engineer): Cloud server setup, Web application development
+  \item Krissada Singhakachain (Backend Engineer): Server setup, web application development
   \item Thanakrit Bunrueng (System Architect): Design system architecture, design communication interface
   \item Boonyakorn Tanrattanakorn (Embedded System Programmer): Implement sensor integration, embedded firmware development
 \end{enumerate}
@@ -538,7 +538,7 @@ Both \nameref{sub:website_sub} and \nameref{sub:data_collection_sub} subsystems 
 
 \subsection{Week 1 (Nov 10-16)}
 \begin{itemize}
-  \item \textbf{Sippakorn:} Project kickoff, repository setup, equipment procurement
+  \item \textbf{Sippakorn:} Project kickoff, repository setup
   \item \textbf{Krissada:} Research MQTT brokers, setup dev environment
   \item \textbf{Thanakrit:} Design system architecture, define protocols
   \item \textbf{Boonyakorn:} Study STM32 HAL, setup IDE, test basic I/O
@@ -556,16 +556,16 @@ Both \nameref{sub:website_sub} and \nameref{sub:data_collection_sub} subsystems 
 \begin{itemize}
   \item \textbf{Sippakorn:} Integration testing, update documentation
   \item \textbf{Krissada:} Integrate MQTT client, add data logging, build UI
-  \item \textbf{Thanakrit:} Validate protocols, optimize transmission
+  \item \textbf{Thanakrit:} Validate protocols
   \item \textbf{Boonyakorn:} Integrate sensors, implement ESP32 firmware, add servo/LED
 \end{itemize}
 
 \subsection{Week 4 (Dec 1-8)}
 \begin{itemize}
   \item \textbf{Sippakorn:} Final testing, check results, prepare presentation
-  \item \textbf{Krissada:} Load testing, optimize database, deploy production
+  \item \textbf{Krissada:} Deploy production
   \item \textbf{Thanakrit:} Performance validation, finalize documentation
-  \item \textbf{Boonyakorn:} Bug fixes, power optimization, code documentation
+  \item \textbf{Boonyakorn:} Bug fixes, power optimization
 \end{itemize}
 
 \subsection{Key Milestones}
