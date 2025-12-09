@@ -29,8 +29,8 @@
   keywordstyle=\color{keywordcolor}\bfseries,
   stringstyle=\color{stringcolor},
   commentstyle=\color{commentcolor}\itshape,
-  numberstyle=\tiny\color{linenumber},
-  numbers=left,
+  % numberstyle=\tiny\color{linenumber},
+  % numbers=left,
   numbersep=10pt,
   stepnumber=1,
   showstringspaces=false,
@@ -150,29 +150,106 @@
 The objective of this project is to design and implement a weather station system capable of monitoring and reporting various environmental parameters, including temperature, humidity, light intensity, and liquid precipitation. The system will utilize microcontroller units (MCUs) to interface with sensors, process the collected data, and transmit it to a cloud server for remote access and visualization through a web application.
 
 \section{Equipment List}
-\begin{enumerate}
-  \item STM32 Nucleo F411RE Board
-  \item ESP32-S3 Development Board
-  \item DHT11 Temperature and Humidity Sensor
-  \item Light Dependent Resistor (LDR)
-  \item HW-038 Water Level Sensor
-  \item SG90 Servo Motor
-  \item Jumper
-  \item Breadboard
-  \item USB Cables
-\end{enumerate}
+% \begin{enumerate}
+%   \item STM32 Nucleo F411RE Board
+%   \item ESP32-S3 Development Board
+%   \item DHT11 Temperature and Humidity Sensor
+%   \item Light Dependent Resistor (LDR)
+%   \item HW-038 Water Level Sensor
+%   \item SG90 Servo Motor
+%   \item Jumper
+%   \item Breadboard
+%   \item USB Cables
+% \end{enumerate}
+
+% \subsection{Equipment Images}
+\begin{figure}[H]
+  \centering
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,height=4cm,keepaspectratio]{assets/equipments/Nucleo_Board_64_DSL.jpg}
+    \caption{STM32 Nucleo F411RE Board}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,height=4cm,keepaspectratio]{assets/equipments/esp32.jpg}
+    \caption{ESP32-S3 Development Board}
+  \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,height=4cm,keepaspectratio]{assets/equipments/dht11.jpg}
+    \caption{DHT11 Temperature and Humidity Sensor}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,height=4cm,keepaspectratio]{assets/equipments/ldr.jpg}
+    \caption{Light Dependent Resistor (LDR)}
+  \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,height=4cm,keepaspectratio]{assets/equipments/water_level.jpeg}
+    \caption{HW-038 Water Level Sensor}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,height=4cm,keepaspectratio]{assets/equipments/SG90_2-800x800.jpg}
+    \caption{SG90 Servo Motor}
+  \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,height=4cm,keepaspectratio]{assets/equipments/jumper.jpg}
+    \caption{Jumper Cable}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,height=4cm,keepaspectratio]{assets/equipments/breadboard.jpg}
+    \caption{Breadboard}
+  \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,height=4cm,keepaspectratio]{assets/equipments/usb mini cable.jpg}
+    \caption{USB Mini Cable}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth,height=4cm,keepaspectratio]{assets/equipments/usb_c_cable.jpg}
+    \caption{USB Type-C Cable}
+  \end{minipage}
+\end{figure}
+
 \subsection{Setup Picture}
 \begin{figure}[H]
   \centering
   \begin{minipage}[t]{0.48\textwidth}
     \centering
-    \includegraphics[width=\textwidth]{assets/hardware_setup.jpg}
+    \includegraphics[width=\textwidth,height=6cm,keepaspectratio]{assets/hardware_setup.jpg}
     \caption{Hardware Setup}
   \end{minipage}
   \hfill
   \begin{minipage}[t]{0.48\textwidth}
     \centering
-    \includegraphics[width=\textwidth]{assets/rain_gauge.jpg}
+    \includegraphics[width=\textwidth,height=6cm,keepaspectratio]{assets/rain_gauge.jpg}
     \caption{Servo Actuated Rain Gauge}
   \end{minipage}
 \end{figure}
@@ -350,7 +427,7 @@ The Data Collection Subsystem serves as the central hub for receiving, processin
 \end{figure}
 
 \subsubsection{MQTT Broker}
-The system utilizes an MQTT broker as the primary communication protocol between the ESP32S3 and the website. MQTT was selected for its lightweight nature, low bandwidth requirements, and publish-subscribe messaging pattern, which is ideal for IoT applications.
+The system utilizes an MQTT broker as the primary communication protocol between the ESP32S3 and the web application. MQTT was selected for its lightweight nature, low bandwidth requirements, and publish-subscribe messaging pattern, which is ideal for IoT applications.
 
 Due to limitation on the browser's ability to directly connect via MQTT protocol, Eclipse Mosquitto was chosen for its ability to open a WebSocket interface, allowing the web application to communicate with the broker directly.
 
@@ -381,7 +458,7 @@ It has a single API endpoint which is \texttt{/api/history}.
     %   \end{itemize}
 \end{itemize}
 
-\subsubsection{API Response Format}
+\textbf{API Response Format}
 
 The \texttt{/api/history} endpoint returns a JSON object containing an array of historical sensor readings:
 
@@ -471,9 +548,9 @@ The database stores historical weather data for visualization and analysis.
 %   \item ESP32S3 receives commands and executes corresponding actions
 % \end{enumerate}
 
-\subsection{Website Subsystem}
+\subsection{Web Application Subsystem}
 \label{sub:website_sub}
-The Website Subsystem provides a user-friendly interface for monitoring real-time weather data, viewing historical trends, and controlling device functions.
+The Web Application Subsystem provides a user-friendly interface for monitoring real-time weather data, viewing historical trends, and controlling device functions.
 % The web application is designed to be responsive and accessible from various devices including desktops, tablets, and smartphones.
 SvelteKit is selected for its lightweight nature and ease of use.
 
@@ -583,6 +660,24 @@ Both \nameref{sub:website_sub} and \nameref{sub:data_collection_sub} subsystems 
 \section{Appendix}
 \begin{itemize}
   \item  Source code repository: \url{https://github.com/orgs/Embedded-Lab-Project-2025/repositories}
+  \item  MQTT URL: \url{ubunsin.krissada.com:1883} (MQTT), \url{https://ws.jarnyam.krissada.com} (WebSocket)
+  \item  Backend URL: \url{https://api.jarnyam.krissada.com}
+  \item  Web Application URL: \url{https://jarnyam.krissada.com}
 \end{itemize}
 
-\end{document}
+\section{References}
+\subsection{Equipment Images}
+\begin{itemize}
+  \item STM32 Nucleo F411RE Board: \url{https://th.mouser.com/ProductDetail/STMicroelectronics/NUCLEO-F411RE?qs=Zt3UNFD9mQjdEJg18RwZ2g%3D%3D}
+    \item ESP32-S3 Development Board: \url{https://www.amazon.com/YEJMKJ-Development-ESP32-S3-DevKitC-1-N16R8-ESP32-S3-WROOM-1-Microcontroller/dp/B0CRRNLTPD}
+    \item DHT11 Temperature and Humidity Sensor: \url{https://www.genlogic.co.th/product/60/dht11-temperature-and-humidity-sensor-module}
+    \item Light Dependent Resistor (LDR): \url{https://kitsguru.com/products/photosensitive-resistor-sensor-module-for-arduino}
+    \item HW-038 Water Level Sensor: \url{https://www.majju.pk/product/analog-water-level-sensor-module-for-arduino/}
+    \item SG90 Servo Motor: \url{https://th.cytron.io/p-sg90-micro-servo}
+    \item Jumper Cable: \url{https://www.robotsiam.com/product/16/jumper-f2m-cable-wire-40pcs-2-54mm-20cm-female-to-male}
+    \item Breadboard: \url{https://www.pishop.us/product/full-sized-breadboard-830-points/}
+    \item USB Mini Cable: \url{https://th.rs-online.com/web/p/usb-cables/1862818}
+    \item USB Type-C Cable: \url{https://www.torchdirect.co.uk/products/usb-type-c-to-usb-type-c-1-5-m-data-sync-and-charging-cable}
+  \end{itemize}
+
+  \end{document}
